@@ -64,6 +64,11 @@ export const NgPdf = ($window, $document, $log) => {
       scope.pageNum = pageToDisplay;
 
       scope.renderPage = num => {
+
+        if (isNaN(num)) {
+          return;
+        }
+
         if (renderTask) {
           renderTask._internalRenderTask.cancel();
         }

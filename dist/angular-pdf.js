@@ -155,6 +155,11 @@ var NgPdf = exports.NgPdf = ["$window", "$document", "$log", function NgPdf($win
       scope.pageNum = pageToDisplay;
 
       scope.renderPage = function (num) {
+
+        if (isNaN(num)) {
+          return;
+        }
+
         if (renderTask) {
           renderTask._internalRenderTask.cancel();
         }
