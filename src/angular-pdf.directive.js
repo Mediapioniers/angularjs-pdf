@@ -65,13 +65,13 @@ export const NgPdf = ($window, $document, $log) => {
             PDFJS.disableWorker = true;
             scope.pageNum = pageToDisplay;
 
-            scope.renderPage = num => {
+            scope.renderPage = (num, force = false) => {
 
-                if (isNaN(num) || !pdfDoc || renderingPage[num] || renderedPage === num) {
+                if (isNaN(num) || !pdfDoc || renderingPage[num] || (renderedPage === num && !force)) {
                     return;
                 }
 
-                debug && $log.log('renderPage(%s)', num);
+                debug && $log.log('angular-pdf: renderPage(%s)', num);
 
                 renderingPage[num] = true;
 
@@ -111,7 +111,7 @@ export const NgPdf = ($window, $document, $log) => {
                         delete renderingPage[num];
                         renderedPage = num;
                     }).catch(reason => {
-                        $log.log(reason);
+                        $log.log('angular-pdf: ',reason);
                         renderTask = null;
                         delete renderingPage[num];
                         renderedPage = undefined;
@@ -138,24 +138,24 @@ export const NgPdf = ($window, $document, $log) => {
             scope.zoomIn = () => {
                 pageFit = false;
                 scale = parseFloat(scale) + 0.2;
-                scope.renderPage(scope.pageToDisplay);
+                scope.renderPage(scope.pageToDisplay, true);
                 return scale;
             };
 
             scope.zoomOut = () => {
                 pageFit = false;
                 scale = parseFloat(scale) - 0.2;
-                scope.renderPage(scope.pageToDisplay);
+                scope.renderPage(scope.pageToDisplay, true);
                 return scale;
             };
 
             scope.fit = () => {
                 pageFit = true;
-                scope.renderPage(scope.pageToDisplay);
+                scope.renderPage(scope.pageToDisplay, true);
             };
 
             scope.changePage = () => {
-                scope.renderPage(scope.pageToDisplay);
+                scope.renderPage(scope.pageToDisplay, true);
             };
 
             scope.rotate = () => {
@@ -223,8 +223,8 @@ export const NgPdf = ($window, $document, $log) => {
             });
 
             scope.$watch('pdfUrl', newVal => {
-                if (newVal !== '') {
-                    debug && $log.log('pdfUrl value change detected: ', scope.pdfUrl);
+                if (!!newVal) {
+                    debug && $log.log('angular-pdf: pdfUrl value change detected: ', scope.pdfUrl);
                     url = newVal;
                     scope.pageNum = scope.pageToDisplay = pageToDisplay;
                     if (pdfLoaderTask) {
@@ -238,7 +238,7 @@ export const NgPdf = ($window, $document, $log) => {
             });
 
             scope.$on('$destroy', function(e) {
-                debug && $log.log('Destroying scope', e, scope, pdfLoaderTask);
+                debug && $log.log('angular-pdf: Destroying scope', e, scope, pdfLoaderTask);
                 if (pdfLoaderTask) {
                     pdfLoaderTask.destroy().then(() => {
                         pdfLoaderTask = null;
