@@ -5,10 +5,10 @@ export const NgPdf = ($window, $document, $log) => {
         const ctx = canvas.getContext('2d');
         const dpr = $window.devicePixelRatio || 1;
         const bsr = ctx.webkitBackingStorePixelRatio ||
-            ctx.mozBackingStorePixelRatio ||
-            ctx.msBackingStorePixelRatio ||
-            ctx.oBackingStorePixelRatio ||
-            ctx.backingStorePixelRatio || 1;
+                    ctx.mozBackingStorePixelRatio ||
+                    ctx.msBackingStorePixelRatio ||
+                    ctx.oBackingStorePixelRatio ||
+                    ctx.backingStorePixelRatio || 1;
 
         return dpr / bsr;
     };
@@ -111,7 +111,7 @@ export const NgPdf = ($window, $document, $log) => {
                         delete renderingPage[num];
                         renderedPage = num;
                     }).catch(reason => {
-                        $log.log('angular-pdf: ',reason);
+                        $log.log('angular-pdf: ', reason);
                         renderTask = null;
                         delete renderingPage[num];
                         renderedPage = undefined;
@@ -226,7 +226,7 @@ export const NgPdf = ($window, $document, $log) => {
                 if (!!newVal) {
                     debug && $log.log('angular-pdf: pdfUrl value change detected: ', scope.pdfUrl);
                     url = newVal;
-                    scope.pageNum = scope.pageToDisplay = pageToDisplay;
+                    scope.pageNum = scope.pageToDisplay = isNaN(pageToDisplay) ? 1 : pageToDisplay;
                     if (pdfLoaderTask) {
                         pdfLoaderTask.destroy().then(() => {
                             renderPDF();
