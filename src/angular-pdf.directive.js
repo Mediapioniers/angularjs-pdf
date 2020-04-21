@@ -62,7 +62,6 @@ export const NgPdf = ($window, $document, $log) => {
                 });
             });
 
-            PDFJS.disableWorker = true;
             scope.pageNum = pageToDisplay;
 
             scope.renderPage = (num, force = false) => {
